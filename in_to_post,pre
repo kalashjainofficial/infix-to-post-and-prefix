@@ -1,0 +1,100 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int priority(char ch) {
+    if (ch == '^') return 1;
+    if (ch == '*' || ch == '/') return 2;
+    if (ch == '+' || ch == '-') return 3;
+    return 100; // non-operator or parentheses
+}
+
+void swap (char &a , char &b){
+    char c ;
+    c = a;
+    a = b ; 
+    b = c;
+}
+
+
+void reverse (string &st){
+    for(int a = 0  , b= st.length()-1 ; a<= b  ; a++ , b-- ){
+swap(st[a] , st[b]);
+    }
+}
+
+string in_to_post(string expression)
+{
+
+
+    stack<char> st;
+    string output;
+    for (char token : expression)
+    {
+        //number
+        if (token >= '0' && token <= '9') {
+            output.push_back(token);
+        }
+        // Left parenthesis
+        else if (token == '(') {
+            st.push(token);
+        }
+        // Right parenthesis
+        else if (token == ')') {
+            while (!st.empty() && st.top() != '(') {
+                output.push_back(st.top());
+                st.pop();
+            }
+            if (!st.empty()) st.pop(); // remove '('
+        }
+        // Operator
+        else {
+            while (!st.empty() && priority(st.top()) <= priority(token) && st.top() != '(') {
+                output.push_back(st.top());
+                st.pop();
+            }
+            st.push(token);
+        }
+    }
+
+    // Pop any remaining operators
+    while (!st.empty()) {
+        output.push_back(st.top());
+        st.pop();
+    }
+
+    return output;
+}
+
+string in_to_pre (string st){
+    string temp = st;
+    reverse(temp);
+
+
+    for (char &token : temp) {   
+    if (token == '(') {
+        token = ')';
+    } else if (token == ')') { 
+        token = '(';
+    }
+}
+
+
+
+    
+
+
+    temp = in_to_post(temp);
+    reverse(temp);
+
+    return temp;
+}
+
+int main() {
+    string expression ;
+    cout<<"enter you expression :- "<<endl;
+    getline(cin , expression);
+    cout << in_to_post(expression) << endl; 
+    cout<<in_to_pre(expression)<<endl;
+
+    
+}
